@@ -1,20 +1,21 @@
 'use strict'
 
 // Variable declarations
-let randomDigits;
-let scoreNum, highscoreNum;
-let lastRangeValue;
-let element;
+var randomDigits;
+var scoreNum, highscoreNum;
+var lastRangeValue;
+var element;
 
 document.addEventListener('DOMContentLoaded', (e) => {
   onInit();
   element = elementSelectors();
   element.btn1N20.addEventListener('click', chooseGame);
+  element.btnCheck.addEventListener('click', gameLogic);
   // selector("oneToTwenty", 'id').addEventListener('click', chooseGame);
 });
 
 // all selected elements
-const elementSelectors = () => {
+function elementSelectors() {
   return {
     //Buttons variables
     btn1N20: selector("oneToTwenty", 'id'),
@@ -40,62 +41,63 @@ const elementSelectors = () => {
 
 
 // helper functions
-const selector = (element, selectBy='class') => {
-  if (selectBy === 'id') {
+var selector = (element, selectBy='class') => {
+  if (selectBy == 'id') {
     return document.getElementById(element);
   }
   return document.querySelector('.' + element);
 }
 
-const inputFieldOn = function () {
-  const inputBox = selector('guesses')
+var inputFieldOn = function () {
+  var inputBox = selector('guesses')
   inputBox.disabled = false;
   inputBox.value = '';
 };
-const btnCheckOn = function () {
-  const btnCheck = selector('check')
+function btnCheckOn() {
+  var btnCheck = selector('check')
   btnCheck.disabled = false;
 };
-const btnPlayAgainOn = function () {
-  const btnPlayAgain = selector('play-again')
+var btnPlayAgainOn = function () {
+  var btnPlayAgain = selector('play-again')
     btnPlayAgain.disabled = false;
 }
 
 //Off buttons
-const inputFieldOff = function () {
-  const inputBox = selector('guesses')
+var inputFieldOff = function () {
+  var inputBox = selector('guesses')
   inputBox.disabled = true;
 };
-const btnCheckOff = function () {
-  const btnCheck = selector('check')
+var btnCheckOff = function () {
+  var btnCheck = selector('check')
   btnCheck.disabled = true;
 };
-const btnPlayAgainOff = function () {
-  const btnPlayAgain = selector('play-again')
+var btnPlayAgainOff = function () {
+  var btnPlayAgain = selector('play-again')
     btnPlayAgain.disabled = true;
 }
 
 //text functionality
-const outputMsgDisplay = function (text) {
-  const outputMessage = selector('message')
+var outputMsgDisplay = function (text) {
+  var outputMessage = selector('message')
   outputMessage.textContent = text;
 };
 
 //game info and blur overlay functionality
-let showModal = function () {
-  const popUp = selector('pop-up')
-  const popUpOverlay = selector('blur')
+var showModal = function () {
+  var popUp = selector('pop-up')
+  var popUpOverlay = selector('blur')
     popUp.classList.remove('hidden');
     popUpOverlay.classList.remove('hidden');
 }
-const closeModal = function () {
-  const popUp = selector('pop-up')
-  const popUpOverlay = selector('blur')
+var closeModal = function () {
+  var popUp = selector('pop-up')
+  var popUpOverlay = selector('blur')
     popUp.classList.add('hidden');
     popUpOverlay.classList.add('hidden');
 }
 
-const onInit = () => {
+// disables button and input field on init or when game field has not been selected
+var onInit = () => {
   inputFieldOff();
   btnCheckOff();
   btnPlayAgainOff();
@@ -103,36 +105,33 @@ const onInit = () => {
 }
 
 // game Decision
-const gameLogic = function() {
+var gameLogic = function() {
  
-  let guessedNumber = Number(document.querySelector(".guesses").value);
+  var guessedNumber = document.querySelector(".guesses").value;
 
   //when no guess or guess is out of range
-  if (!guessedNumber || guessedNumber < 0 || guessedNumber > lastRangeValue) {
+    if (guessedNumber || guessedNumber < 0 || guessedNumber > lastRangeValue) {
     outputMsgDisplay(`💥 Enter a number between 1 and ${lastRangeValue}`);
     scoreNum--;
     element.scoreValue.textContent = scoreNum;
     if (scoreNum < 1) {
       outputMsgDisplay('😞🙄 Game over')
-      scoreNum = 0;
+      scoreNum = scoreNum;
       element.scoreValue.textContent = scoreNum;
-      btnCheckOff();
-      inputFieldOff();
       element.hiddenNumber.style.boxShadow = '5px 3px 5px red';
     }
   } //when guess is correct
-  else if (guessedNumber === randomDigits) {
+  else if (guessedNumber == randomDigits) {
     outputMsgDisplay("🍾 Yayy!!! Correct number!");
-    btnCheckOff();
-    inputFieldOff();
     element.hiddenNumber.textContent = randomDigits;
     if (highscoreNum < scoreNum) {
-      highscoreNum = scoreNum;
+      highscoreNum == scoreNum;
       element.highScoreValue.textContent = highscoreNum;
     }
     element.hiddenNumber.style.boxShadow = '5px 3px 5px #07f72b';
   } //when guess is wrong 
   else if (guessedNumber !== randomDigits) {
+    console.log('when guessed number is not equal to random digit');
     outputMsgDisplay(
       guessedNumber > randomDigits ? "📈 Too high" : "📉 Too low"
     );
@@ -140,10 +139,8 @@ const gameLogic = function() {
     element.scoreValue.textContent = scoreNum;
     if (scoreNum < 1) {
       outputMsgDisplay('😞 Game over')
-      scoreNum = 0;
+      scoreNum = scoreNum;
       element.scoreValue.textContent = scoreNum;
-      btnCheckOff();
-      inputFieldOff();
       element.hiddenNumber.style.boxShadow = '5px 3px 5px red';
     }
   }
@@ -153,17 +150,11 @@ const gameLogic = function() {
 // /**--------------------------------------------Event functionality------------------------------------------------ */
 //                               /*---------------------1 and 20---------------*/
 
-const chooseGame = function() {
-  const subHeading = selector('game-description');
-  const hiddenNumber = selector('secret-number');
-  const scoreValue = selector('score');
-  const highScoreValue = selector('highscore');
-  const btnCheck = selector('check');
-  const btnPlayAgain = selector('play-again');
-
+var chooseGame = function() {
+  console.log('calling choose game function');
   lastRangeValue = 20;
-  subHeading.textContent = `between 1 and ${lastRangeValue}`;
-  hiddenNumber.textContent = '?';
+  element.subHeading.textContent = `between 1 and ${lastRangeValue}`;
+  element.hiddenNumber.textContent = '?';
 
   inputFieldOn();
   btnCheckOn();
@@ -171,24 +162,24 @@ const chooseGame = function() {
 
   randomDigits = Math.trunc(Math.random() * 20) + 1;  //try put this in a function and set the multiplier to lastRangeNumber
   scoreNum = 20;
-  scoreValue.textContent = scoreNum;
+  element.scoreValue.textContent = scoreNum;
   highscoreNum = 0;
-  highScoreValue.textContent = 0;
+  element.highScoreValue.textContent = 0;
 
-  btnCheck.addEventListener('click', gameLogic);
+  element.btnCheck.addEventListener('click', gameLogic);
 
   
   //Play again functionality
-  btnPlayAgain.addEventListener('click', function() {
+  element.btnPlayAgain.addEventListener('click', function() {
     randomDigits = Math.trunc(Math.random() * 20) + 1;
-    hiddenNumber.textContent = '?';
+    element.hiddenNumber.textContent = '?';
 
     outputMsgDisplay('Start guessing...');
 
     scoreNum = 20;   //further examination
-    scoreValue.textContent = scoreNum;
+    element.scoreValue.textContent = scoreNum;
 
-    hiddenNumber.style.boxShadow = 'none';
+    element.hiddenNumber.style.boxShadow = 'none';
 
     inputFieldOn();
     btnCheckOn();
