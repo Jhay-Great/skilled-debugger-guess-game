@@ -77,7 +77,7 @@ var btnPlayAgainOff = function () {
 }
 
 //text functionality
-var outputMsgDisplay = function (text) {
+var displayFeedback = function (text) {
   var outputMessage = selector('message')
   outputMessage.textContent = text;
 };
@@ -108,21 +108,22 @@ var onInit = () => {
 var gameLogic = function() {
  
   var guessedNumber = document.querySelector(".guesses").value;
+  console.log({guessedNumber, randomDigits})
 
   //when no guess or guess is out of range
     if (guessedNumber || guessedNumber < 0 || guessedNumber > lastRangeValue) {
-    outputMsgDisplay(`💥 Enter a number between 1 and ${lastRangeValue}`);
+    displayFeedback(`💥 Enter a number between 1 and ${lastRangeValue}`);
     scoreNum--;
     element.scoreValue.textContent = scoreNum;
     if (scoreNum < 1) {
-      outputMsgDisplay('😞🙄 Game over')
+      displayFeedback('😞🙄 Game over')
       scoreNum = scoreNum;
       element.scoreValue.textContent = scoreNum;
       element.hiddenNumber.style.boxShadow = '5px 3px 5px red';
     }
   } //when guess is correct
   else if (guessedNumber == randomDigits) {
-    outputMsgDisplay("🍾 Yayy!!! Correct number!");
+    displayFeedback("🍾 Yayy!!! Correct number!");
     element.hiddenNumber.textContent = randomDigits;
     if (highscoreNum < scoreNum) {
       highscoreNum == scoreNum;
@@ -132,13 +133,13 @@ var gameLogic = function() {
   } //when guess is wrong 
   else if (guessedNumber !== randomDigits) {
     console.log('when guessed number is not equal to random digit');
-    outputMsgDisplay(
+    displayFeedback(
       guessedNumber > randomDigits ? "📈 Too high" : "📉 Too low"
     );
     scoreNum--;
     element.scoreValue.textContent = scoreNum;
     if (scoreNum < 1) {
-      outputMsgDisplay('😞 Game over')
+      displayFeedback('😞 Game over')
       scoreNum = scoreNum;
       element.scoreValue.textContent = scoreNum;
       element.hiddenNumber.style.boxShadow = '5px 3px 5px red';
@@ -160,7 +161,7 @@ var chooseGame = function() {
   btnCheckOn();
   btnPlayAgainOn();
 
-  randomDigits = Math.trunc(Math.random() * 20) + 1;  //try put this in a function and set the multiplier to lastRangeNumber
+  randomDigits = generateRandomNumber();  //try put this in a function and set the multiplier to lastRangeNumber
   scoreNum = 20;
   element.scoreValue.textContent = scoreNum;
   highscoreNum = 0;
@@ -171,10 +172,10 @@ var chooseGame = function() {
   
   //Play again functionality
   element.btnPlayAgain.addEventListener('click', function() {
-    randomDigits = Math.trunc(Math.random() * 20) + 1;
+    randomDigits = generateRandomNumber();
     element.hiddenNumber.textContent = '?';
 
-    outputMsgDisplay('Start guessing...');
+    displayFeedback('Start guessing...');
 
     scoreNum = 20;   //further examination
     element.scoreValue.textContent = scoreNum;
@@ -185,4 +186,8 @@ var chooseGame = function() {
     btnCheckOn();
 
   })
+}
+
+function generateRandomNumber() {
+  randomDigits = Math.trunc(Math.random() * 20) + 1;
 }
