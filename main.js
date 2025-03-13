@@ -6,28 +6,25 @@ var scoreNum, highscoreNum;
 var lastRangeValue;
 var element;
 
-document.addEventListener('DOMContentLoaded', (e) => {
-  onInit();
-  element = elementSelectors();
-  element.btn1N20.addEventListener('click', selectGameRange);
-  element.btnCheck.addEventListener('click', gameLogic);
-  // selector("oneToTwenty", 'id').addEventListener('click', selectGameRange);
-});
-
 // all selected elements
 function elementSelectors() {
   return {
+    // container
+    main: selector('content'),
+    rangeDropdown: selector("range-dropdown"),
+    
     //Buttons variables
     btn1N20: selector("oneToTwenty", 'id'),
     btn1N50: selector("oneToFifty", 'id'),
     btn1N100: selector("oneToHundred", 'id'),
     btnCheck: selector("check"),
     btnPlayAgain: selector("play-again"),
-
-    popUp: selector('pop-up'),
-    popUpOverlay: selector('blur'),
     popUpCloseBtn: selector('close-btn'),
     gameInfoBtn: selector('game-info'),
+
+    // overlays
+    popUp: selector('pop-up'),
+    popUpOverlay: selector('blur'),
 
     //text variables
     subHeading: selector("game-description"),
@@ -39,6 +36,28 @@ function elementSelectors() {
   }
 }
 
+var feedback = {
+  tooLow: "📉 Too low",
+  tooHigh: "📈 Too high",
+  outOfRange: `💥 Enter a number between 1 and ${lastRangeValue}`,
+  gameOver: '😞🙄 Game over',
+  victory: "🍾 Yayy!!! Correct number!", 
+}
+
+document.addEventListener('DOMContentLoaded', (e) => {
+  onInit();
+   var element = elementSelectors();
+   
+   // main parent clicks
+   element.main.addEventListener('click', (e) => {
+     element.btn1N20.addEventListener('click', selectGameRange);
+     element.btnCheck.addEventListener('click', gameLogic);
+
+  })
+  
+});
+
+
 
 // helper functions
 var selector = (element, selectBy='class') => {
@@ -48,6 +67,7 @@ var selector = (element, selectBy='class') => {
   return document.querySelector('.' + element);
 }
 
+// on buttons
 var inputFieldOn = function () {
   var inputBox = selector('guesses')
   inputBox.disabled = false;
@@ -76,7 +96,7 @@ var btnPlayAgainOff = function () {
     btnPlayAgain.disabled = true;
 }
 
-//text functionality
+//feedback functionality
 var displayFeedback = function (text) {
   var outputMessage = selector('message')
   outputMessage.textContent = text;
@@ -101,29 +121,28 @@ var onInit = () => {
   inputFieldOff();
   btnCheckOff();
   btnPlayAgainOff();
-  // showModal();
 }
 
 // game Decision
 var gameLogic = function() {
  
   var guessedNumber = document.querySelector(".guesses").value;
-  console.log({guessedNumber, randomDigits})
 
   //when no guess or guess is out of range
     if (guessedNumber || guessedNumber < 0 || guessedNumber > lastRangeValue) {
-    displayFeedback(`💥 Enter a number between 1 and ${lastRangeValue}`);
+    // displayFeedback(feedback.outOfRange);
+    displayFeedback(feedback.handleRangeValue(lastRangeValue));
     scoreNum--;
     element.scoreValue.textContent = scoreNum;
-    if (scoreNum < 1) {
-      displayFeedback('😞🙄 Game over')
+    if (scoreNum === 1) {
+      displayFeedback(feedback.gameOver)
       scoreNum = scoreNum;
       element.scoreValue.textContent = scoreNum;
       element.hiddenNumber.style.boxShadow = '5px 3px 5px red';
     }
   } //when guess is correct
   else if (guessedNumber == randomDigits) {
-    displayFeedback("🍾 Yayy!!! Correct number!");
+    displayFeedback(feedback.victory);
     element.hiddenNumber.textContent = randomDigits;
     if (highscoreNum < scoreNum) {
       highscoreNum == scoreNum;
@@ -132,14 +151,13 @@ var gameLogic = function() {
     element.hiddenNumber.style.boxShadow = '5px 3px 5px #07f72b';
   } //when guess is wrong 
   else if (guessedNumber !== randomDigits) {
-    console.log('when guessed number is not equal to random digit');
     displayFeedback(
-      guessedNumber > randomDigits ? "📈 Too high" : "📉 Too low"
+      guessedNumber > randomDigits ? feedback.tooHigh : feedback.tooLow
     );
     scoreNum--;
     element.scoreValue.textContent = scoreNum;
     if (scoreNum < 1) {
-      displayFeedback('😞 Game over')
+      displayFeedback(feedback.gameOver)
       scoreNum = scoreNum;
       element.scoreValue.textContent = scoreNum;
       element.hiddenNumber.style.boxShadow = '5px 3px 5px red';
@@ -152,7 +170,6 @@ var gameLogic = function() {
 //                               /*---------------------1 and 20---------------*/
 
 var selectGameRange = function() {
-  console.log('calling choose game function');
   lastRangeValue = 20;
   element.subHeading.textContent = `between 1 and ${lastRangeValue}`;
   element.hiddenNumber.textContent = '?';
@@ -168,6 +185,7 @@ var selectGameRange = function() {
   element.highScoreValue.textContent = 0;
 
   element.btnCheck.addEventListener('click', gameLogic);
+  element.btnCheck.removeEventListener('click', gameLogic);
 
 }
 
