@@ -9,9 +9,9 @@ var element;
 document.addEventListener('DOMContentLoaded', (e) => {
   onInit();
   element = elementSelectors();
-  element.btn1N20.addEventListener('click', chooseGame);
+  element.btn1N20.addEventListener('click', selectGameRange);
   element.btnCheck.addEventListener('click', gameLogic);
-  // selector("oneToTwenty", 'id').addEventListener('click', chooseGame);
+  // selector("oneToTwenty", 'id').addEventListener('click', selectGameRange);
 });
 
 // all selected elements
@@ -151,7 +151,7 @@ var gameLogic = function() {
 // /**--------------------------------------------Event functionality------------------------------------------------ */
 //                               /*---------------------1 and 20---------------*/
 
-var chooseGame = function() {
+var selectGameRange = function() {
   console.log('calling choose game function');
   lastRangeValue = 20;
   element.subHeading.textContent = `between 1 and ${lastRangeValue}`;
@@ -169,23 +169,6 @@ var chooseGame = function() {
 
   element.btnCheck.addEventListener('click', gameLogic);
 
-  
-  //Play again functionality
-  element.btnPlayAgain.addEventListener('click', function() {
-    randomDigits = generateRandomNumber();
-    element.hiddenNumber.textContent = '?';
-
-    displayFeedback('Start guessing...');
-
-    scoreNum = 20;   //further examination
-    element.scoreValue.textContent = scoreNum;
-
-    element.hiddenNumber.style.boxShadow = 'none';
-
-    inputFieldOn();
-    btnCheckOn();
-
-  })
 }
 
 function generateRandomNumber() {
